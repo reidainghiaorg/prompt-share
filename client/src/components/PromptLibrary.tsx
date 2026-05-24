@@ -11,6 +11,7 @@ import {
   type CategoryId,
   type PromptItem,
 } from "@/data/prompts";
+import { trpc } from "@/lib/trpc";
 import PromptCard from "./PromptCard";
 
 const ALL_TOOLS: AITool[] = [
@@ -40,9 +41,50 @@ export default function PromptLibrary({ onView }: PromptLibraryProps) {
   const [sort, setSort] = useState<SortKey>("popular");
   const [showFilters, setShowFilters] = useState(false);
 
+  const { data: communityRaw = [] } = trpc.prompts.listApproved.useQuery();
+
+  // Map community prompts (from DB) into PromptItem shape used by the UI.
+  const communityPrompts = useMemo<PromptItem[]>(() => {
+    return communityRaw.map((c) => {
+      const tools = (c.aiTools ?? "")
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean) as AITool[];
+      const tags = (c.tags ?? "")
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean);
+      const createdAt = c.createdAt ? new Date(c.createdAt).toISOString().slice(0, 10) : "";
+      return {
+        id: `c${c.id}`,
+        title: { en: c.titleEn, vi: c.titleVi || c.titleEn },
+        description: {
+          en: c.descriptionEn ?? "",
+          vi: c.descriptionVi ?? c.descriptionEn ?? "",
+        },
+        prompt: {
+          en: c.promptEn,
+          vi: c.promptVi || c.promptEn,
+        },
+        category: (c.category as CategoryId) ?? "writing",
+        tools: tools.length > 0 ? tools : ["ChatGPT"],
+        tags,
+        author: c.authorName ?? "Community",
+        likes: 0,
+        uses: 0,
+        createdAt,
+      } satisfies PromptItem;
+    });
+  }, [communityRaw]);
+
+  const allPrompts = useMemo(
+    () => [...communityPrompts, ...PROMPTS],
+    [communityPrompts]
+  );
+
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    let list = PROMPTS.filter((p) => {
+    let list = allPrompts.filter((p) => {
       if (category !== "all" && p.category !== category) return false;
       if (tool !== "all" && !p.tools.includes(tool)) return false;
       if (!q) return true;
@@ -66,7 +108,7 @@ export default function PromptLibrary({ onView }: PromptLibraryProps) {
       list = [...list].sort((a, b) => b.createdAt.localeCompare(a.createdAt));
     if (sort === "uses") list = [...list].sort((a, b) => b.uses - a.uses);
     return list;
-  }, [query, category, tool, sort]);
+  }, [allPrompts, query, category, tool, sort]);
 
   const hasActiveFilter = query !== "" || category !== "all" || tool !== "all";
 

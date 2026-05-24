@@ -10,11 +10,17 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { I18nProvider } from "./contexts/I18nContext";
 import Home from "./pages/Home";
+import SubmitPage from "./pages/Submit";
+import MyPromptsPage from "./pages/MyPrompts";
+import AdminPage from "./pages/Admin";
 
 function Router() {
   return (
     <Switch>
       <Route path={"/"} component={Home} />
+      <Route path={"/submit"} component={SubmitPage} />
+      <Route path={"/my-prompts"} component={MyPromptsPage} />
+      <Route path={"/admin"} component={AdminPage} />
       <Route path={"/404"} component={NotFound} />
       <Route component={NotFound} />
     </Switch>

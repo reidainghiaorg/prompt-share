@@ -88,6 +88,51 @@ const dict: Dict = {
   "sort.popular": { en: "Most popular", vi: "Phổ biến nhất" },
   "sort.newest": { en: "Newest", vi: "Mới nhất" },
   "sort.uses": { en: "Most used", vi: "Dùng nhiều nhất" },
+
+  // Auth & user menu
+  "auth.login": { en: "Sign in", vi: "Đăng nhập" },
+  "auth.logout": { en: "Sign out", vi: "Đăng xuất" },
+  "auth.my": { en: "My prompts", vi: "Prompt của tôi" },
+  "auth.submit": { en: "Submit prompt", vi: "Đăng prompt" },
+  "auth.admin": { en: "Moderation", vi: "Kiểm duyệt" },
+  "auth.welcome": { en: "Welcome", vi: "Xin chào" },
+
+  // Submit form
+  "submit.form.title": { en: "Submit a new prompt", vi: "Đăng prompt mới" },
+  "submit.form.sub": {
+    en: "Fill in the details below. An admin will review your prompt before it appears in the public library.",
+    vi: "Điền thông tin bên dưới. Admin sẽ kiểm duyệt trước khi prompt của bạn xuất hiện trong thư viện công khai.",
+  },
+  "submit.field.titleEn": { en: "Title (English) *", vi: "Tiêu đề (Tiếng Anh) *" },
+  "submit.field.titleVi": { en: "Title (Vietnamese)", vi: "Tiêu đề (Tiếng Việt)" },
+  "submit.field.descEn": { en: "Description (English)", vi: "Mô tả (Tiếng Anh)" },
+  "submit.field.descVi": { en: "Description (Vietnamese)", vi: "Mô tả (Tiếng Việt)" },
+  "submit.field.promptEn": { en: "Prompt content (English) *", vi: "Nội dung prompt (Tiếng Anh) *" },
+  "submit.field.promptVi": { en: "Prompt content (Vietnamese)", vi: "Nội dung prompt (Tiếng Việt)" },
+  "submit.field.category": { en: "Category *", vi: "Danh mục *" },
+  "submit.field.aiTools": { en: "For which AI? * (select at least one)", vi: "Dành cho AI nào? * (chọn ít nhất một)" },
+  "submit.field.tags": { en: "Tags (comma separated)", vi: "Thẻ (cách nhau bằng dấu phẩy)" },
+  "submit.field.required": { en: "You must provide at least the English title and prompt body.", vi: "Bạn cần nhập tối thiểu tiêu đề và nội dung prompt tiếng Anh." },
+  "submit.button": { en: "Submit for review", vi: "Gửi để kiểm duyệt" },
+  "submit.success": { en: "Your prompt was submitted. An admin will review it shortly.", vi: "Prompt của bạn đã được gửi. Admin sẽ sớm kiểm duyệt." },
+  "submit.loginFirst": { en: "Please sign in to submit a prompt.", vi: "Vui lòng đăng nhập để đăng prompt." },
+
+  // My prompts
+  "my.title": { en: "My prompts", vi: "Prompt của tôi" },
+  "my.sub": { en: "Track the moderation status of everything you've submitted.", vi: "Theo dõi trạng thái kiểm duyệt các prompt bạn đã đăng." },
+  "my.empty": { en: "You haven't submitted any prompt yet.", vi: "Bạn chưa đăng prompt nào." },
+  "status.pending": { en: "Pending review", vi: "Đang chờ duyệt" },
+  "status.approved": { en: "Approved", vi: "Đã duyệt" },
+  "status.rejected": { en: "Rejected", vi: "Đã từ chối" },
+
+  // Admin
+  "admin.title": { en: "Moderation queue", vi: "Hàng đợi kiểm duyệt" },
+  "admin.sub": { en: "Review submitted prompts and decide whether they appear in the public library.", vi: "Xem các prompt đã gửi và quyết định cho hiển thị công khai hay không." },
+  "admin.empty": { en: "Nothing to review right now. Great job!", vi: "Hiện không có prompt nào cần duyệt. Tốt lắm!" },
+  "admin.approve": { en: "Approve", vi: "Duyệt" },
+  "admin.reject": { en: "Reject", vi: "Từ chối" },
+  "admin.rejectReason": { en: "Reason (optional)", vi: "Lý do (không bắt buộc)" },
+  "admin.by": { en: "submitted by", vi: "gửi bởi" },
 };
 
 interface I18nContextType {

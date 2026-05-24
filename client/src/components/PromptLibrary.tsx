@@ -57,6 +57,7 @@ export default function PromptLibrary({ onView }: PromptLibraryProps) {
       const createdAt = c.createdAt ? new Date(c.createdAt).toISOString().slice(0, 10) : "";
       return {
         id: `c${c.id}`,
+        serverId: c.id,
         title: { en: c.titleEn, vi: c.titleVi || c.titleEn },
         description: {
           en: c.descriptionEn ?? "",
@@ -70,8 +71,9 @@ export default function PromptLibrary({ onView }: PromptLibraryProps) {
         tools: tools.length > 0 ? tools : ["ChatGPT"],
         tags,
         author: c.authorName ?? "Community",
-        likes: 0,
-        uses: 0,
+        authorSlug: c.authorSlug ?? null,
+        likes: Number(c.likeCount ?? 0),
+        uses: Number(c.copyCount ?? 0),
         createdAt,
       } satisfies PromptItem;
     });

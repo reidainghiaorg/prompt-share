@@ -56,6 +56,13 @@ export default function Header({ onNavigate }: HeaderProps) {
     refetchInterval: 30_000,
   });
 
+  // Resolve the current user's public profile slug (lazily created on the server
+  // the first time it is requested) so we can link to it from the user menu.
+  const { data: mySlug } = trpc.auth.mySlug.useQuery(undefined, {
+    enabled: isAuthenticated,
+    staleTime: 5 * 60_000,
+  });
+
   return (
     <header
       className={`sticky top-0 z-50 w-full transition-all duration-300 ${
@@ -146,6 +153,14 @@ export default function Header({ onNavigate }: HeaderProps) {
                     {t("auth.my")}
                   </Link>
                 </DropdownMenuItem>
+                {mySlug?.slug && (
+                  <DropdownMenuItem asChild>
+                    <Link href={`/u/${mySlug.slug}`} className="cursor-pointer">
+                      <Sparkles className="w-3.5 h-3.5 mr-2 text-violet-300" />
+                      {t("profile.viewMine")}
+                    </Link>
+                  </DropdownMenuItem>
+                )}
                 {isAdmin && (
                   <DropdownMenuItem asChild>
                     <Link href="/admin" className="cursor-pointer flex items-center justify-between gap-2 w-full">

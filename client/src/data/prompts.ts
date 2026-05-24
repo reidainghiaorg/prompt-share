@@ -36,6 +36,14 @@ export interface PromptItem {
   tools: AITool[];
   tags: string[];
   author: string;
+  /**
+   * URL-safe handle for the author's public profile. Built-in seed prompts use
+   * `mr-nghia`; community prompts inherit the slug stored on the users table.
+   * `null` means the author profile is not reachable (legacy / migration).
+   */
+  authorSlug: string | null;
+  /** Backend-provided numeric ID for community prompts; null for built-in seeds. */
+  serverId?: number | null;
   likes: number;
   uses: number;
   createdAt: string;
@@ -73,6 +81,7 @@ export const PROMPTS: PromptItem[] = [
     tools: ["ChatGPT", "Claude", "Gemini"],
     tags: ["seo", "blog", "content"],
     author: "Mr. Nghĩa",
+    authorSlug: "mr-nghia",
     likes: 1284,
     uses: 5621,
     createdAt: "2026-04-12",
@@ -95,6 +104,7 @@ export const PROMPTS: PromptItem[] = [
     tools: ["Midjourney", "Stable Diffusion", "DALL-E"],
     tags: ["portrait", "cinematic", "photography"],
     author: "Mr. Nghĩa",
+    authorSlug: "mr-nghia",
     likes: 2156,
     uses: 8932,
     createdAt: "2026-04-18",
@@ -117,6 +127,7 @@ export const PROMPTS: PromptItem[] = [
     tools: ["ChatGPT", "Claude", "GitHub Copilot"],
     tags: ["review", "refactor", "best-practices"],
     author: "Mr. Nghĩa",
+    authorSlug: "mr-nghia",
     likes: 1872,
     uses: 6234,
     createdAt: "2026-04-22",
@@ -139,6 +150,7 @@ export const PROMPTS: PromptItem[] = [
     tools: ["ChatGPT", "Claude", "Gemini"],
     tags: ["tiktok", "viral", "social-media"],
     author: "Mr. Nghĩa",
+    authorSlug: "mr-nghia",
     likes: 3421,
     uses: 12453,
     createdAt: "2026-05-02",
@@ -161,6 +173,7 @@ export const PROMPTS: PromptItem[] = [
     tools: ["Midjourney", "Stable Diffusion", "DALL-E"],
     tags: ["ui", "glassmorphism", "futuristic"],
     author: "Mr. Nghĩa",
+    authorSlug: "mr-nghia",
     likes: 1965,
     uses: 7234,
     createdAt: "2026-05-08",
@@ -183,6 +196,7 @@ export const PROMPTS: PromptItem[] = [
     tools: ["ChatGPT", "Claude", "Gemini"],
     tags: ["startup", "strategy", "lean"],
     author: "Mr. Nghĩa",
+    authorSlug: "mr-nghia",
     likes: 1456,
     uses: 4823,
     createdAt: "2026-04-28",
@@ -205,6 +219,7 @@ export const PROMPTS: PromptItem[] = [
     tools: ["Sora", "Runway"],
     tags: ["sci-fi", "cinematic", "scene"],
     author: "Mr. Nghĩa",
+    authorSlug: "mr-nghia",
     likes: 2789,
     uses: 6453,
     createdAt: "2026-05-10",
@@ -227,6 +242,7 @@ export const PROMPTS: PromptItem[] = [
     tools: ["Suno"],
     tags: ["lofi", "chill", "study"],
     author: "Mr. Nghĩa",
+    authorSlug: "mr-nghia",
     likes: 1342,
     uses: 4198,
     createdAt: "2026-05-12",
@@ -249,6 +265,7 @@ export const PROMPTS: PromptItem[] = [
     tools: ["ChatGPT", "Claude", "Gemini"],
     tags: ["deep-work", "schedule", "habits"],
     author: "Mr. Nghĩa",
+    authorSlug: "mr-nghia",
     likes: 987,
     uses: 3245,
     createdAt: "2026-05-15",
@@ -271,6 +288,7 @@ export const PROMPTS: PromptItem[] = [
     tools: ["ChatGPT", "Claude", "Gemini"],
     tags: ["learning", "socratic", "tutor"],
     author: "Mr. Nghĩa",
+    authorSlug: "mr-nghia",
     likes: 1623,
     uses: 5128,
     createdAt: "2026-05-18",
@@ -293,6 +311,7 @@ export const PROMPTS: PromptItem[] = [
     tools: ["ChatGPT", "Claude"],
     tags: ["email", "sequence", "conversion"],
     author: "Mr. Nghĩa",
+    authorSlug: "mr-nghia",
     likes: 1124,
     uses: 3876,
     createdAt: "2026-05-20",
@@ -315,6 +334,7 @@ export const PROMPTS: PromptItem[] = [
     tools: ["ChatGPT", "Claude", "GitHub Copilot"],
     tags: ["react", "typescript", "tailwind"],
     author: "Mr. Nghĩa",
+    authorSlug: "mr-nghia",
     likes: 2034,
     uses: 7621,
     createdAt: "2026-05-22",

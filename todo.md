@@ -12,3 +12,15 @@
 - [x] Owner notification triggered when a new prompt is submitted
 - [x] Vitest coverage: auth gates + input validation (10 tests passing)
 - [x] Save checkpoint and deliver to user
+
+## Round 2 — Likes, copy counter, public author profiles
+
+- [x] Add `promptLikes` table (userId, promptId) + `copyCount` & `likeCount` columns on `prompts`
+- [x] Add `publicHandle` (slug) on `users` derived from name for clean profile URLs
+- [x] Backend tRPC: prompts.toggleLike, prompts.incrementCopy, prompts.bySlug (single), users.profile (name + counts + approved prompts)
+- [x] Card + Modal: heart button with optimistic update, copy button increments server counter
+- [x] PromptLibrary: real "Most popular" (likes) and "Most used" (copies) sorting also for community prompts
+- [x] Public author profile page `/u/:slug` with avatar initial, bio fallback, lists of approved prompts and totals
+- [x] Link author name on cards/modals to the profile page
+- [x] Vitest coverage for like/copy/profile procedures (auth, validation, NOT_FOUND)
+- [x] Save checkpoint and deliver

@@ -1,11 +1,26 @@
 /**
  * DESIGN PHILOSOPHY: Holographic Glass — glass card with glow on hover.
+ *
+ * Engagement features:
+ *  - Like button: persists to backend for community prompts; built-in seeds
+ *    fall back to a friendly toast asking users to like a community prompt.
+ *  - Copy button: records the copy event so the "Most used" sort reflects
+ *    real-world usage instead of static placeholder numbers.
+ *  - Author chip: routes to /u/:slug when a public profile exists.
  */
 import { useState } from "react";
 import { Check, Copy, Eye, Heart, Zap } from "lucide-react";
 import { toast } from "sonner";
+import { Link } from "wouter";
 import { useI18n } from "@/contexts/I18nContext";
 import { CATEGORIES, type PromptItem } from "@/data/prompts";
+import { useAuth } from "@/_core/hooks/useAuth";
+import { getLoginUrl } from "@/const";
+import {
+  useIncrementCopy,
+  useLikedPromptIds,
+  useToggleLike,
+} from "@/hooks/usePromptEngagement";
 
 interface PromptCardProps {
   prompt: PromptItem;
@@ -15,22 +30,42 @@ interface PromptCardProps {
 
 export default function PromptCard({ prompt, index, onView }: PromptCardProps) {
   const { lang, t } = useI18n();
+  const { isAuthenticated } = useAuth();
+  const likedSet = useLikedPromptIds();
+  const toggleLike = useToggleLike();
+  const incrementCopy = useIncrementCopy();
   const [copied, setCopied] = useState(false);
 
   const category = CATEGORIES.find((c) => c.id === prompt.category);
+  const isCommunity = typeof prompt.serverId === "number";
+  const liked = isCommunity ? likedSet.has(prompt.serverId!) : false;
 
   const handleCopy = async (e: React.MouseEvent) => {
     e.stopPropagation();
     try {
       await navigator.clipboard.writeText(prompt.prompt[lang]);
       setCopied(true);
-      toast.success(t("card.copied"), {
-        description: prompt.title[lang],
-      });
+      toast.success(t("card.copied"), { description: prompt.title[lang] });
       setTimeout(() => setCopied(false), 2000);
+      if (isCommunity) {
+        incrementCopy.mutate({ promptId: prompt.serverId! });
+      }
     } catch {
       toast.error("Copy failed");
     }
+  };
+
+  const handleLike = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!isCommunity) {
+      toast.info(t("like.loginFirst"));
+      return;
+    }
+    if (!isAuthenticated) {
+      window.location.href = getLoginUrl();
+      return;
+    }
+    toggleLike.mutate({ promptId: prompt.serverId! });
   };
 
   return (
@@ -47,25 +82,52 @@ export default function PromptCard({ prompt, index, onView }: PromptCardProps) {
           <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-cyan-400/5 via-transparent to-violet-500/5" />
         </div>
 
-        {/* Header: category + tools */}
+        {/* Header: category + like button */}
         <div className="relative flex items-start justify-between gap-3 mb-4">
           <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-white/5 border border-white/10 text-[11px] font-medium text-muted-foreground">
             <span className="text-cyan-300">{category?.emoji}</span>
             {category?.[lang]}
           </div>
-          <div className="flex items-center gap-1 text-[11px] text-muted-foreground">
-            <Heart className="w-3 h-3 text-pink-400/70" />
+          <button
+            onClick={handleLike}
+            aria-pressed={liked}
+            aria-label={liked ? t("card.liked") : t("card.like")}
+            className={`inline-flex items-center gap-1 px-2 h-7 rounded-md border text-[11px] font-medium transition-all active:scale-95 ${
+              liked
+                ? "bg-pink-500/15 border-pink-400/40 text-pink-200"
+                : "bg-white/5 border-white/10 text-muted-foreground hover:text-pink-200 hover:border-pink-400/30 hover:bg-pink-500/10"
+            }`}
+          >
+            <Heart
+              className={`w-3 h-3 transition-transform ${liked ? "fill-pink-400 text-pink-400" : ""}`}
+            />
             {prompt.likes.toLocaleString()}
-          </div>
+          </button>
         </div>
 
         {/* Title & description */}
         <h3 className="relative font-display font-semibold text-lg leading-snug mb-2 group-hover:text-gradient transition-colors">
           {prompt.title[lang]}
         </h3>
-        <p className="relative text-sm text-muted-foreground line-clamp-2 mb-4">
+        <p className="relative text-sm text-muted-foreground line-clamp-2 mb-3">
           {prompt.description[lang]}
         </p>
+
+        {/* Author chip */}
+        <div className="relative mb-3 text-[11px] text-muted-foreground">
+          {t("modal.author")}{" "}
+          {prompt.authorSlug ? (
+            <Link
+              href={`/u/${prompt.authorSlug}`}
+              onClick={(e) => e.stopPropagation()}
+              className="text-cyan-300 hover:text-cyan-200 font-medium"
+            >
+              {prompt.author}
+            </Link>
+          ) : (
+            <span className="text-foreground font-medium">{prompt.author}</span>
+          )}
+        </div>
 
         {/* Prompt preview */}
         <div className="relative mb-4 p-3 rounded-lg bg-black/20 border border-white/5">
@@ -95,7 +157,7 @@ export default function PromptCard({ prompt, index, onView }: PromptCardProps) {
         <div className="relative flex items-center justify-between pt-3 border-t border-white/5">
           <div className="flex items-center gap-1 text-[11px] text-muted-foreground">
             <Zap className="w-3 h-3 text-cyan-400/70" />
-            {prompt.uses.toLocaleString()} {t("card.uses")}
+            {prompt.uses.toLocaleString()} {t("card.copies")}
           </div>
           <div className="flex items-center gap-1">
             <button

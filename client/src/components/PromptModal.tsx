@@ -4,8 +4,16 @@
 import { useState } from "react";
 import { Check, Copy, Heart, Tag, X, Zap } from "lucide-react";
 import { toast } from "sonner";
+import { Link } from "wouter";
 import { useI18n, type Lang } from "@/contexts/I18nContext";
 import { CATEGORIES, type PromptItem } from "@/data/prompts";
+import { useAuth } from "@/_core/hooks/useAuth";
+import { getLoginUrl } from "@/const";
+import {
+  useIncrementCopy,
+  useLikedPromptIds,
+  useToggleLike,
+} from "@/hooks/usePromptEngagement";
 
 interface PromptModalProps {
   prompt: PromptItem | null;
@@ -14,11 +22,17 @@ interface PromptModalProps {
 
 export default function PromptModal({ prompt, onClose }: PromptModalProps) {
   const { lang, t } = useI18n();
+  const { isAuthenticated } = useAuth();
+  const likedSet = useLikedPromptIds();
+  const toggleLike = useToggleLike();
+  const incrementCopy = useIncrementCopy();
   const [copiedLang, setCopiedLang] = useState<Lang | null>(null);
 
   if (!prompt) return null;
 
   const category = CATEGORIES.find((c) => c.id === prompt.category);
+  const isCommunity = typeof prompt.serverId === "number";
+  const liked = isCommunity ? likedSet.has(prompt.serverId!) : false;
 
   const handleCopy = async (l: Lang) => {
     try {
@@ -28,9 +42,24 @@ export default function PromptModal({ prompt, onClose }: PromptModalProps) {
         description: l === "en" ? "English version" : "Phiên bản Tiếng Việt",
       });
       setTimeout(() => setCopiedLang(null), 2000);
+      if (isCommunity) {
+        incrementCopy.mutate({ promptId: prompt.serverId! });
+      }
     } catch {
       toast.error("Copy failed");
     }
+  };
+
+  const handleLike = () => {
+    if (!isCommunity) {
+      toast.info(t("like.loginFirst"));
+      return;
+    }
+    if (!isAuthenticated) {
+      window.location.href = getLoginUrl();
+      return;
+    }
+    toggleLike.mutate({ promptId: prompt.serverId! });
   };
 
   return (
@@ -66,20 +95,39 @@ export default function PromptModal({ prompt, onClose }: PromptModalProps) {
                 <span className="text-cyan-300">{category?.emoji}</span>
                 {category?.[lang]}
               </div>
-              <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                <Heart className="w-3 h-3 text-pink-400/70" />
+              <button
+                onClick={handleLike}
+                aria-pressed={liked}
+                className={`inline-flex items-center gap-1 px-2 h-7 rounded-md border text-xs font-medium transition-all active:scale-95 ${
+                  liked
+                    ? "bg-pink-500/15 border-pink-400/40 text-pink-200"
+                    : "bg-white/5 border-white/10 text-muted-foreground hover:text-pink-200 hover:border-pink-400/30 hover:bg-pink-500/10"
+                }`}
+              >
+                <Heart className={`w-3 h-3 ${liked ? "fill-pink-400 text-pink-400" : ""}`} />
                 {prompt.likes.toLocaleString()}
-              </div>
+              </button>
               <div className="flex items-center gap-1 text-xs text-muted-foreground">
                 <Zap className="w-3 h-3 text-cyan-400/70" />
-                {prompt.uses.toLocaleString()}
+                {prompt.uses.toLocaleString()} {t("card.copies")}
               </div>
             </div>
             <h2 className="font-display font-bold text-2xl sm:text-3xl leading-tight">
               {prompt.title[lang]}
             </h2>
             <p className="mt-2 text-sm text-muted-foreground">
-              {t("modal.author")} <span className="text-foreground font-medium">{prompt.author}</span>
+              {t("modal.author")}{" "}
+              {prompt.authorSlug ? (
+                <Link
+                  href={`/u/${prompt.authorSlug}`}
+                  onClick={onClose}
+                  className="text-cyan-300 hover:text-cyan-200 font-medium"
+                >
+                  {prompt.author}
+                </Link>
+              ) : (
+                <span className="text-foreground font-medium">{prompt.author}</span>
+              )}
             </p>
           </div>
 

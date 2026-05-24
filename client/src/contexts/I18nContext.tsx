@@ -133,6 +133,29 @@ const dict: Dict = {
   "admin.reject": { en: "Reject", vi: "Từ chối" },
   "admin.rejectReason": { en: "Reason (optional)", vi: "Lý do (không bắt buộc)" },
   "admin.by": { en: "submitted by", vi: "gửi bởi" },
+
+  // Like + author profile
+  "card.like": { en: "Like", vi: "Yêu thích" },
+  "card.liked": { en: "Liked", vi: "Đã thích" },
+  "card.copies": { en: "copies", vi: "lượt copy" },
+  "like.loginFirst": { en: "Please sign in to like this prompt.", vi: "Vui lòng đăng nhập để yêu thích prompt này." },
+  "profile.title": { en: "Author profile", vi: "Hồ sơ tác giả" },
+  "profile.notFound": { en: "Author not found", vi: "Không tìm thấy tác giả" },
+  "profile.member": { en: "Community member", vi: "Thành viên cộng đồng" },
+  "profile.curator": { en: "Curator & Founder", vi: "Curator & Người sáng lập" },
+  "profile.joined": { en: "Joined", vi: "Tham gia" },
+  "profile.totalPrompts": { en: "Approved prompts", vi: "Prompt đã duyệt" },
+  "profile.totalLikes": { en: "Total likes", vi: "Tổng lượt thích" },
+  "profile.totalCopies": { en: "Total copies", vi: "Tổng lượt copy" },
+  "profile.empty": { en: "This author has not published any prompt yet.", vi: "Tác giả chưa công bố prompt nào." },
+  "profile.back": { en: "Back to library", vi: "Về thư viện" },
+  "profile.viewMine": { en: "View my profile", vi: "Xem hồ sơ của tôi" },
+  "profile.editBio": { en: "Edit bio", vi: "Sửa giới thiệu" },
+  "profile.saveBio": { en: "Save", vi: "Lưu" },
+  "profile.bioPlaceholder": {
+    en: "Tell the community a bit about yourself (max 280 characters).",
+    vi: "Giới thiệu đôi nét về bạn (tối đa 280 ký tự).",
+  },
 };
 
 interface I18nContextType {

@@ -185,3 +185,7 @@ export default defineConfig({
     },
   },
 });
+export default defineConfig({
+  base: '/prompt-share/', // Thay bằng tên chính xác repo GitHub của bạn
+  // các cấu hình khác giữ nguyên...
+})
